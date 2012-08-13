@@ -9,7 +9,7 @@ namespace Shelter.ZoneFileParser.Tests
     [TestClass]
     public class ZoneFileEntryTests
     {
-        private TestZoneFileEntry TestEntry1 = new TestZoneFileEntry
+        private static readonly TestZoneFileEntry TestEntry1 = new TestZoneFileEntry
         {
             Data = "1.2.3.4",
             Name = "test1.test",
@@ -17,7 +17,7 @@ namespace Shelter.ZoneFileParser.Tests
             Type = JHSoftware.DnsClient.RecordType.A
         };
 
-        private TestZoneFileEntry TestEntry2 = new TestZoneFileEntry
+        private static readonly TestZoneFileEntry TestEntry2 = new TestZoneFileEntry
         {
             Data = "5.6.7.8",
             Name = "test2.test",
@@ -25,7 +25,7 @@ namespace Shelter.ZoneFileParser.Tests
             Type = JHSoftware.DnsClient.RecordType.A
         };
 
-        private TestZoneFileEntry TestEntry3 = new TestZoneFileEntry
+        private static readonly TestZoneFileEntry TestEntry3 = new TestZoneFileEntry
         {
             Data = "9.10.11.12",
             Name = "test3.test",
@@ -33,39 +33,119 @@ namespace Shelter.ZoneFileParser.Tests
             Type = JHSoftware.DnsClient.RecordType.A
         };
 
+        private static readonly TestZoneFileEntry TestEntry4 = new TestZoneFileEntry
+        {
+            Data = "test1.test",
+            Name = "www.test1.test",
+            TTL = 86400,
+            Type = JHSoftware.DnsClient.RecordType.CNAME
+        };
+
+        private static readonly FakeDnsServer.Servers[] AllServers = new[]
+        {
+            FakeDnsServer.Servers.Server1, FakeDnsServer.Servers.Server2
+        };
+
         [TestMethod]
-        public void Test1()
+        public void GetRecordTest1()
         {
             var result = FakeDnsServer.GetRecords(FakeDnsServer.Servers.Server1, "test1.test", JHSoftware.DnsClient.RecordType.A).ToList();
 
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual("1.2.3.4", result[0].Data);
+            Assert.AreEqual(86400, result[0].TTL);
+            Assert.AreEqual(JHSoftware.DnsClient.RecordType.A, result[0].Type);
         }
 
         [TestMethod]
-        public void ValidateAgainstServerRecordTest_Simple1()
+        public void GetRecordTest2()
+        {
+            var result = FakeDnsServer.GetRecords(FakeDnsServer.Servers.Server2, "test1.test", JHSoftware.DnsClient.RecordType.A).ToList();
+
+            Assert.AreEqual(0, result.Count);
+        }
+
+        [TestMethod]
+        public void ValidateAgainstServerRecordTest1()
         {
             TestEntry1.ValidateAgainstServerRecord(FakeDnsServer.Servers.Server1);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidZoneFileEntryException))]
-        public void ValidateAgainstServerRecordTest_Simple2()
+        public void ValidateAgainstServerRecordTest2()
         {
             TestEntry3.ValidateAgainstServerRecord(FakeDnsServer.Servers.Server1);
         }
 
         [TestMethod]
+        [ExpectedException(typeof(InvalidZoneFileEntryException))]
+        public void ValidateAgainstServerRecordTest3()
+        {
+            var clone = (TestZoneFileEntry)TestEntry1.Clone();
+
+            clone.TTL -= 1;
+            clone.ValidateAgainstServerRecord(FakeDnsServer.Servers.Server1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidZoneFileEntryException))]
+        public void ValidateAgainstServerRecordTest4()
+        {
+            var clone = (TestZoneFileEntry)TestEntry1.Clone();
+
+            clone.Data += "1";
+            clone.ValidateAgainstServerRecord(FakeDnsServer.Servers.Server1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidZoneFileEntryException))]
+        public void ValidateAgainstServerRecordTest5()
+        {
+            var clone = (TestZoneFileEntry)TestEntry1.Clone();
+
+            clone.Name += "a";
+            clone.ValidateAgainstServerRecord(FakeDnsServer.Servers.Server1);
+        }
+
+        [TestMethod]
         public void ValidateForAgreementBetweenServersTest1()
         {
-            TestEntry2.ValidateForAgreementBetweenServers(new[] { FakeDnsServer.Servers.Server1, FakeDnsServer.Servers.Server2 });
+            TestEntry2.ValidateForAgreementBetweenServers(AllServers);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidZoneFileEntryException))]
         public void ValidateForAgreementBetweenServersTest2()
         {
-            TestEntry1.ValidateForAgreementBetweenServers(new[] { FakeDnsServer.Servers.Server1, FakeDnsServer.Servers.Server2 });
+            TestEntry1.ValidateForAgreementBetweenServers(AllServers);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidZoneFileEntryException))]
+        public void ValidateForAgreementBetweenServersTest3()
+        {
+            var clone = (TestZoneFileEntry)TestEntry1.Clone();
+
+            clone.TTL -= 1;
+            clone.ValidateForAgreementBetweenServers(AllServers);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidZoneFileEntryException))]
+        public void ValidateForAgreementBetweenServersTest4()
+        {
+            var clone = (TestZoneFileEntry)TestEntry1.Clone();
+
+            clone.Data += "1";
+            clone.ValidateForAgreementBetweenServers(AllServers);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidZoneFileEntryException))]
+        public void ValidateForAgreementBetweenServersTest5()
+        {
+            TestEntry4.ValidateForAgreementBetweenServers(AllServers);
         }
     }
 }

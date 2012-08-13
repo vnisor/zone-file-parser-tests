@@ -34,6 +34,13 @@ namespace Shelter.ZoneFileParser.Tests
                         Data = "5.6.7.8",
                         Name = "test2.test",
                         TTL = 86400
+                    },
+                    (IRecord)new TestRecord
+                    {
+                        Type = DnsClient.RecordType.CNAME,
+                        Data = "test2.test",
+                        Name = "www.test1.test",
+                        TTL = 86400
                     }
                 }.ToList()
             },
@@ -46,6 +53,13 @@ namespace Shelter.ZoneFileParser.Tests
                         Type = DnsClient.RecordType.A,
                         Data = "5.6.7.8",
                         Name = "test2.test",
+                        TTL = 86400
+                    },
+                    (IRecord)new TestRecord
+                    {
+                        Type = DnsClient.RecordType.CNAME,
+                        Data = "test1.test",
+                        Name = "www.test1.test",
                         TTL = 86400
                     }
                 }.ToList()

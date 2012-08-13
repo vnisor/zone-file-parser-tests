@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Shelter.ZoneFileParser.Tests
 {
-    class TestZoneFileEntry : ZoneFileEntry
+    class TestZoneFileEntry : ZoneFileEntry, ICloneable
     {
         public override System.Collections.ObjectModel.ReadOnlyCollection<IRecord> GetRecordsFromDnsServer(string dnsServer)
         {
@@ -20,6 +20,17 @@ namespace Shelter.ZoneFileParser.Tests
         public void ValidateForAgreementBetweenServers(IEnumerable<FakeDnsServer.Servers> servers)
         {
             ValidateForAgreementBetweenServers(servers.Select(s => s.ToString()));
+        }
+
+        public object Clone()
+        {
+            return new TestZoneFileEntry
+            {
+                Data = this.Data,
+                Name = this.Name,
+                TTL = this.TTL,
+                Type = this.Type
+            };
         }
     }
 }
