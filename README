@@ -1,0 +1,3 @@
+Test project for https://github.com/mrichardson-shelter/zone-file-parser
+
+Clone this project and zone-file-parser into two separate directories,  create a new solution, then add both projects to the solution. References may need updating at this point. (Should really have versioned the two projects together as a single solution, may do that in future)
