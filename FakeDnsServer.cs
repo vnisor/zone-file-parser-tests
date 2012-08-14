@@ -9,6 +9,12 @@ namespace Shelter.ZoneFileParser.Tests
 {
     static class FakeDnsServer
     {
+        public const string Test1Hostname = "test1.test";
+        public const string Test2Hostname = "test2.test";
+
+        public const string Test1IpAddress = "1.2.3.4";
+        public const string Test2IpAddress = "5.6.7.8";
+
         public enum Servers
         {
             Server1,
@@ -24,22 +30,22 @@ namespace Shelter.ZoneFileParser.Tests
                     (IRecord)new TestRecord
                     {
                         Type = DnsClient.RecordType.A,
-                        Data = "1.2.3.4",
-                        Name = "test1.test",
+                        Data = Test1IpAddress,
+                        Name = Test1Hostname,
                         TTL = 86400
                     },
                     (IRecord)new TestRecord
                     {
                         Type = DnsClient.RecordType.A,
-                        Data = "5.6.7.8",
-                        Name = "test2.test",
+                        Data = Test2IpAddress,
+                        Name = Test2Hostname,
                         TTL = 86400
                     },
                     (IRecord)new TestRecord
                     {
                         Type = DnsClient.RecordType.CNAME,
-                        Data = "test2.test",
-                        Name = "www.test1.test",
+                        Data = Test2Hostname,
+                        Name = String.Format("www.{0}", Test1Hostname),
                         TTL = 86400
                     }
                 }.ToList()
@@ -51,15 +57,15 @@ namespace Shelter.ZoneFileParser.Tests
                     (IRecord)new TestRecord
                     {
                         Type = DnsClient.RecordType.A,
-                        Data = "5.6.7.8",
-                        Name = "test2.test",
+                        Data = Test2IpAddress,
+                        Name = Test2Hostname,
                         TTL = 86400
                     },
                     (IRecord)new TestRecord
                     {
                         Type = DnsClient.RecordType.CNAME,
-                        Data = "test1.test",
-                        Name = "www.test1.test",
+                        Data = Test1Hostname,
+                        Name = String.Format("www.{0}", Test1Hostname),
                         TTL = 86400
                     }
                 }.ToList()

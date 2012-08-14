@@ -11,16 +11,16 @@ namespace Shelter.ZoneFileParser.Tests
     {
         private static readonly TestZoneFileEntry TestEntry1 = new TestZoneFileEntry
         {
-            Data = "1.2.3.4",
-            Name = "test1.test",
+            Data = FakeDnsServer.Test1IpAddress,
+            Name = FakeDnsServer.Test1Hostname,
             TTL = 86400,
             Type = JHSoftware.DnsClient.RecordType.A
         };
 
         private static readonly TestZoneFileEntry TestEntry2 = new TestZoneFileEntry
         {
-            Data = "5.6.7.8",
-            Name = "test2.test",
+            Data = FakeDnsServer.Test2IpAddress,
+            Name = FakeDnsServer.Test2Hostname,
             TTL = 86400,
             Type = JHSoftware.DnsClient.RecordType.A
         };
@@ -35,8 +35,8 @@ namespace Shelter.ZoneFileParser.Tests
 
         private static readonly TestZoneFileEntry TestEntry4 = new TestZoneFileEntry
         {
-            Data = "test1.test",
-            Name = "www.test1.test",
+            Data = FakeDnsServer.Test1Hostname,
+            Name = String.Format("www.{0}", FakeDnsServer.Test1Hostname),
             TTL = 86400,
             Type = JHSoftware.DnsClient.RecordType.CNAME
         };
@@ -49,10 +49,10 @@ namespace Shelter.ZoneFileParser.Tests
         [TestMethod]
         public void GetRecordTest1()
         {
-            var result = FakeDnsServer.GetRecords(FakeDnsServer.Servers.Server1, "test1.test", JHSoftware.DnsClient.RecordType.A).ToList();
+            var result = FakeDnsServer.GetRecords(FakeDnsServer.Servers.Server1, FakeDnsServer.Test1Hostname, JHSoftware.DnsClient.RecordType.A).ToList();
 
             Assert.AreEqual(1, result.Count);
-            Assert.AreEqual("1.2.3.4", result[0].Data);
+            Assert.AreEqual(FakeDnsServer.Test1IpAddress, result[0].Data);
             Assert.AreEqual(86400, result[0].TTL);
             Assert.AreEqual(JHSoftware.DnsClient.RecordType.A, result[0].Type);
         }
@@ -60,7 +60,7 @@ namespace Shelter.ZoneFileParser.Tests
         [TestMethod]
         public void GetRecordTest2()
         {
-            var result = FakeDnsServer.GetRecords(FakeDnsServer.Servers.Server2, "test1.test", JHSoftware.DnsClient.RecordType.A).ToList();
+            var result = FakeDnsServer.GetRecords(FakeDnsServer.Servers.Server2, FakeDnsServer.Test1Hostname, JHSoftware.DnsClient.RecordType.A).ToList();
 
             Assert.AreEqual(0, result.Count);
         }
